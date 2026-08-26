@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AM Joyea</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            background: white;
+            overflow: auto;
+            border: 1px solid #ddd;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #f0f0f0;
+            position: sticky;
+            top: 0;
+        }
+
+        #status {
+            margin-bottom: 15px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>AM Joyea</h1>
+
+    <div id="status">Loading Excel...</div>
+
+    <div class="table-container">
+        <div id="excel"></div>
+    </div>
+
+    <script>
+        async function loadExcel() {
+            try {
+                const response = await fetch("./am_joyea.xlsx");
+
+                if (!response.ok) {
+                    throw new Error("File Excel tidak ditemukan");
+                }
+
+                const buffer = await response.arrayBuffer();
+
+                const workbook = XLSX.read(buffer, {
+                    type: "array"
+                });
+
+                // Ambil sheet pertama
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+
+                // Convert Excel → HTML table
+                const html = XLSX.utils.sheet_to_html(sheet);
+
+                document.getElementById("excel").innerHTML = html;
+
+                document.getElementById("status").textContent =
+                    "Sheet: " + sheetName;
+
+            } catch (error) {
+                document.getElementById("status").textContent =
+                    "Gagal membuka Excel: " + error.message;
+            }
+        }
+
+        loadExcel();
+    </script>
+
+</body>
+</html>
