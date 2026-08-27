@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>AM Viewer</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+    }
+
+    header {
+        height: 50px;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        background: #222;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    iframe {
+        display: block;
+        width: 100%;
+        height: calc(100vh - 50px);
+        border: none;
+    }
+
+    .error {
+        padding: 30px;
+        color: #c00;
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<header id="title">
+    AM Viewer
+</header>
+
+<iframe id="viewer"></iframe>
+
+<script>
+
+const PDFS = {
+    "am_filling_sig": "am_filling_sig.pdf",
+    "am_unifill": "am_unifill.pdf",
+    "am_ilapak8": "am_ilapak8.pdf",
+    "am_ilapak_lain": "am_ilapak_lain.pdf",
+    "am_ilapak1": "am_ilapak1.pdf"
+};
+
+
+// Ambil nama AM dari URL
+const params = new URLSearchParams(window.location.search);
+
+const am = params.get("am");
+
+const viewer = document.getElementById("viewer");
+const title = document.getElementById("title");
+
+
+// Cek apakah AM tersedia
+if (am && PDFS[am]) {
+
+    viewer.src = "./" + PDFS[am];
+
+    title.textContent = am;
+
+    document.title = am + " - AM Viewer";
+
+} else {
+
+    viewer.remove();
+
+    const error = document.createElement("div");
+
+    error.className = "error";
+
+    error.innerHTML = `
+        <h3>AM tidak ditemukan</h3>
+        <p>Parameter AM tidak valid.</p>
+    `;
+
+    document.body.appendChild(error);
+}
+
+</script>
+
+</body>
+</html>
