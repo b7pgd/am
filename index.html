@@ -247,6 +247,13 @@
             border-radius: 4px;
             background-color: #f8fafc;
             border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pending-img:hover {
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         footer {
@@ -255,6 +262,105 @@
             color: var(--text-muted);
             margin-top: 32px;
             padding: 0 16px;
+        }
+
+        /* Modal Image Viewer Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-toolbar {
+            position: absolute;
+            top: 16px;
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 16px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 10001;
+            align-items: center;
+        }
+
+        .modal-btn {
+            background: none;
+            border: none;
+            color: #334155;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+
+        .modal-btn:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .modal-btn-download {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .modal-btn-download:hover {
+            background-color: var(--primary-hover);
+            color: #ffffff;
+        }
+
+        .modal-btn-close {
+            color: #ef4444;
+        }
+
+        .modal-btn-close:hover {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .modal-viewport {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        .modal-viewport:active {
+            cursor: grabbing;
+        }
+
+        .modal-img {
+            max-width: 90%;
+            max-height: 85%;
+            object-fit: contain;
+            transition: transform 0.1s ease-out;
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
         @media (min-width: 640px) {
@@ -559,11 +665,11 @@
                 <div class="pending-grid">
                     <div class="pending-item">
                         <span class="pending-title">A. Ilapak 5</span>
-                        <img src="https://b7pgd.github.io/am/ilapak5.jpg" alt="Ilapak 5" class="pending-img" loading="lazy">
+                        <img src="https://b7pgd.github.io/am/ilapak5.jpg" alt="Ilapak 5" class="pending-img" loading="lazy" onclick="openModal(this.src, 'ilapak5.jpg')">
                     </div>
                     <div class="pending-item">
                         <span class="pending-title">B. Granulator</span>
-                        <img src="https://b7pgd.github.io/am/granulator.jpg" alt="Granulator" class="pending-img" loading="lazy">
+                        <img src="https://b7pgd.github.io/am/granulator.jpg" alt="Granulator" class="pending-img" loading="lazy" onclick="openModal(this.src, 'granulator.jpg')">
                     </div>
                 </div>
             </div>
@@ -575,5 +681,139 @@
         Bintang 7
     </footer>
 
+    <!-- Modal Image Viewer Component -->
+    <div class="modal-overlay" id="imageModal" onclick="closeModalOnBg(event)">
+        <div class="modal-toolbar">
+            <button class="modal-btn" onclick="zoomIn()" title="Zoom In">🔍 +</button>
+            <button class="modal-btn" onclick="zoomOut()" title="Zoom Out">🔍 -</button>
+            <button class="modal-btn" onclick="resetZoom()" title="Reset">🔄 Reset</button>
+            <a id="downloadBtn" href="#" download="" class="modal-btn modal-btn-download" title="Download Image">
+                📥 Download
+            </a>
+            <button class="modal-btn modal-btn-close" onclick="closeModal()" title="Tutup">✖</button>
+        </div>
+        <div class="modal-viewport" id="modalViewport">
+            <img id="modalImage" class="modal-img" src="" alt="Zoomable Image">
+        </div>
+    </div>
+
+    <script>
+        let scale = 1;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const viewport = document.getElementById('modalViewport');
+
+        function openModal(src, filename) {
+            modalImg.src = src;
+            
+            // Setup download button cross-browser / cross-origin fallback
+            downloadBtn.onclick = function(e) {
+                e.preventDefault();
+                fetch(src)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const blobUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = blobUrl;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(blobUrl);
+                        a.remove();
+                    })
+                    .catch(() => {
+                        window.open(src, '_blank');
+                    });
+            };
+
+            resetZoom();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Stop scrolling background
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function closeModalOnBg(e) {
+            if (e.target === modal || e.target === viewport) {
+                closeModal();
+            }
+        }
+
+        function updateTransform() {
+            modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
+
+        function zoomIn() {
+            scale = Math.min(scale + 0.3, 5);
+            updateTransform();
+        }
+
+        function zoomOut() {
+            scale = Math.max(scale - 0.3, 0.5);
+            if (scale <= 1) {
+                translateX = 0;
+                translateY = 0;
+            }
+            updateTransform();
+        }
+
+        function resetZoom() {
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateTransform();
+        }
+
+        // Mouse Wheel Zooming
+        viewport.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                scale = Math.min(scale + 0.2, 5);
+            } else {
+                scale = Math.max(scale - 0.2, 0.5);
+                if (scale <= 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+            }
+            updateTransform();
+        });
+
+        // Drag / Pan functionality
+        viewport.addEventListener('mousedown', (e) => {
+            if (scale > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateTransform();
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // ESC Key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
