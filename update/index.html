@@ -1,1 +1,535 @@
-tes
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPDATE FORM AM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border: #e2e8f0;
+            --accent: #2563eb;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius-main: 12px;
+            --radius-sub: 8px;
+            --warning-bg: #fffbebf5;
+            --warning-border: #fde68a;
+            --warning-text: #92400e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 40px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: #ffffff;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            font-size: 0.875rem;
+            color: #93c5fd;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Layout Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-main);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background-color: #f1f5f9;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h2 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .section-body {
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Subcategories */
+        .subcategory-group {
+            margin-bottom: 20px;
+        }
+
+        .subcategory-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .subcategory-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            background-color: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .sub-subcategory-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 10px 0 6px 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sub-subcategory-title::before {
+            content: "•";
+            color: var(--accent);
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        /* Equipment List Table / Cards */
+        .equipment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .equipment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background-color: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sub);
+            transition: all 0.2s ease;
+        }
+
+        .equipment-item:hover {
+            border-color: #cbd5e1;
+            background-color: var(--primary-light);
+        }
+
+        .equipment-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-main);
+            padding-right: 12px;
+            word-break: break-word;
+        }
+
+        .btn-view {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background-color: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 6px;
+            min-width: 120px;
+            min-height: 42px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            flex-shrink: 0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn-view:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-view:active {
+            transform: scale(0.97);
+        }
+
+        .btn-view svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        /* Warning Section Styles */
+        .section-card.warning-card {
+            border-color: var(--warning-border);
+            background-color: var(--warning-bg);
+        }
+
+        .section-header.warning-header {
+            background-color: #fef3c7;
+            border-bottom-color: var(--warning-border);
+        }
+
+        .section-header.warning-header h2 {
+            color: var(--warning-text);
+        }
+
+        .pending-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .pending-item {
+            background-color: #ffffff;
+            border: 1px solid var(--warning-border);
+            border-radius: var(--radius-sub);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pending-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--warning-text);
+        }
+
+        .pending-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 4px;
+            background-color: #f8fafc;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pending-img:hover {
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 32px;
+            padding: 0 16px;
+        }
+
+        /* Modal Image Viewer Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-toolbar {
+            position: absolute;
+            top: 16px;
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 16px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 10001;
+            align-items: center;
+        }
+
+        .modal-btn {
+            background: none;
+            border: none;
+            color: #334155;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+
+        .modal-btn:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .modal-btn-download {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .modal-btn-download:hover {
+            background-color: var(--primary-hover);
+            color: #ffffff;
+        }
+
+        .modal-btn-close {
+            color: #ef4444;
+        }
+
+        .modal-btn-close:hover {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .modal-viewport {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        .modal-viewport:active {
+            cursor: grabbing;
+        }
+
+        .modal-img {
+            max-width: 90%;
+            max-height: 85%;
+            object-fit: contain;
+            transition: transform 0.1s ease-out;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        @media (min-width: 640px) {
+            header h1 { font-size: 1.75rem; }
+            .section-body { padding: 20px; }
+            .equipment-item { padding: 12px 16px; }
+            .equipment-name { font-size: 0.95rem; }
+            .pending-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>LINK FORM AM</h1>
+    </header>
+
+    <main class="container">
+
+        <section class="section-card">
+            <div class="section-body">
+                <a href="https://b7pgd.github.io/am/update/joyea" target="_blank" rel="noopener noreferrer" class="btn-view">
+                    Update AM Joyea
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        Bintang 7
+    </footer>
+
+    <!-- Modal Image Viewer Component -->
+    <div class="modal-overlay" id="imageModal" onclick="closeModalOnBg(event)">
+        <div class="modal-toolbar">
+            <button class="modal-btn" onclick="zoomIn()" title="Zoom In">🔍 +</button>
+            <button class="modal-btn" onclick="zoomOut()" title="Zoom Out">🔍 -</button>
+            <button class="modal-btn" onclick="resetZoom()" title="Reset">🔄 Reset</button>
+            <a id="downloadBtn" href="#" download="" class="modal-btn modal-btn-download" title="Download Image">
+                📥 Download
+            </a>
+            <button class="modal-btn modal-btn-close" onclick="closeModal()" title="Tutup">✖</button>
+        </div>
+        <div class="modal-viewport" id="modalViewport">
+            <img id="modalImage" class="modal-img" src="" alt="Zoomable Image">
+        </div>
+    </div>
+
+    <script>
+        let scale = 1;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const viewport = document.getElementById('modalViewport');
+
+        function openModal(src, filename) {
+            modalImg.src = src;
+
+            // Setup download button cross-browser / cross-origin fallback
+            downloadBtn.onclick = function(e) {
+                e.preventDefault();
+                fetch(src)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const blobUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = blobUrl;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(blobUrl);
+                        a.remove();
+                    })
+                    .catch(() => {
+                        window.open(src, '_blank');
+                    });
+            };
+
+            resetZoom();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Stop scrolling background
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function closeModalOnBg(e) {
+            if (e.target === modal || e.target === viewport) {
+                closeModal();
+            }
+        }
+
+        function updateTransform() {
+            modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
+
+        function zoomIn() {
+            scale = Math.min(scale + 0.3, 5);
+            updateTransform();
+        }
+
+        function zoomOut() {
+            scale = Math.max(scale - 0.3, 0.5);
+            if (scale <= 1) {
+                translateX = 0;
+                translateY = 0;
+            }
+            updateTransform();
+        }
+
+        function resetZoom() {
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateTransform();
+        }
+
+        // Mouse Wheel Zooming
+        viewport.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                scale = Math.min(scale + 0.2, 5);
+            } else {
+                scale = Math.max(scale - 0.2, 0.5);
+                if (scale <= 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+            }
+            updateTransform();
+        });
+
+        // Drag / Pan functionality
+        viewport.addEventListener('mousedown', (e) => {
+            if (scale > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateTransform();
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // ESC Key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
